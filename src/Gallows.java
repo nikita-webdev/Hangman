@@ -89,7 +89,7 @@ public class Gallows {
     public StringBuilder createWordMask(String word) {
         StringBuilder wordMask = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
-            wordMask.append("_"); // Строка
+            wordMask.append("*"); // Строка
         }
 
         return wordMask;
