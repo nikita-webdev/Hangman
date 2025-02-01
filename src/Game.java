@@ -18,6 +18,13 @@ public class Game {
         while (gameCycle) {
             Scanner inputLetter = new Scanner(System.in);
 
+            // Выводим состояние виселицы
+            for (int i = 0; i < gallows.printGallows(gamer.getMistakesCounter()).length; i++) {
+                System.out.println(gallows.printGallows(gamer.getMistakesCounter())[i]);
+            }
+
+            System.out.println("Число ошибок: " + gamer.getMistakesCounter());
+
             if (gamer.getEnteredLetters().length() > 2) {
                 System.out.println("Ранее вы вводили буквы: " + gamer.getEnteredLetters());
             }
@@ -39,10 +46,7 @@ public class Game {
                 resultValidation = gallows.validation(userLetter);
             }
 
-            // Пустые строки в консоли вместо очистки
-            for (int i = 0; i < 10; i++) {
-                System.out.println();
-            }
+
 
             if (word.contains(userLetter)) {
                 StringBuilder wordForReplace = new StringBuilder();
@@ -63,7 +67,6 @@ public class Game {
                 }
 
             } else {
-                System.out.printf("Буквы \"%s\" нет в слове%n", userLetter);
 
                 // Повторно вводимый символ, отсутствующий в секретном слове, не должен считаться за ошибку
                 if (!gamer.hasEnteredLetter(userLetter)) {
@@ -73,13 +76,8 @@ public class Game {
                 gamer.addEnteredLetter(userLetter);
             }
 
-            // Выводим состояние виселицы
-            gallows.printGallows(gamer.getMistakesCounter());
-            for (int i = 0; i < gallows.printGallows(gamer.getMistakesCounter()).length; i++) {
-                System.out.println(gallows.printGallows(gamer.getMistakesCounter())[i]);
-            }
 
-            System.out.println("Число ошибок: " + gamer.getMistakesCounter());
+
 
             if (lettersInWord == 0 || gamer.getMistakesCounter() == 6) {
                 if (lettersInWord == 0) {
@@ -90,6 +88,14 @@ public class Game {
                 gamer.clearMistakes();
                 gamer.clearEnteredLetters();
                 gameCycle = false;
+            } else {
+                for (int i = 0; i < 10; i++) {
+                    System.out.println();
+                }
+
+                if (!word.contains(userLetter)) {
+                    System.out.printf("Буквы \"%s\" нет в слове%n", userLetter);
+                }
             }
         }
     }
