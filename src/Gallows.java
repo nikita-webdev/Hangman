@@ -5,19 +5,79 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Gallows {
-    public Gallows() {
+    private final List<String> words = new ArrayList<>();
 
+    private static final String[][] GALLOWS_STAGES = {
+            {
+                    "      _____ ",
+                    "     |     |",
+                    "           |",
+                    "           |",
+                    "           |",
+                    "          _|_",
+            },
+            {
+                    "      _____",
+                    "     |     |",
+                    "     O     |",
+                    "           |",
+                    "           |",
+                    "          _|_",
+            },
+            {
+                    "      _____",
+                    "     |     |",
+                    "     O     |",
+                    "     |     |",
+                    "           |",
+                    "          _|_",
+            },
+            {
+                    "      _____",
+                    "     |     |",
+                    "     O     |",
+                    "    /|     |",
+                    "           |",
+                    "          _|_",
+            },
+            {
+                    "      _____",
+                    "     |     |",
+                    "     O     |",
+                    "    /|\\    |",
+                    "           |",
+                    "          _|_",
+            },
+            {
+                    "      _____",
+                    "     |     |",
+                    "     O     |",
+                    "    /|\\    |",
+                    "    /      |",
+                    "          _|_",
+            },
+            {
+                    "      _____",
+                    "     |     |",
+                    "     O     |",
+                    "    /|\\    |",
+                    "    / \\    |",
+                    "          _|_",
+            },
+    };
+
+    public String[] printGallows(int numStage) {
+        return GALLOWS_STAGES[numStage];
     }
+
     // Загадать случайное слово из словаря
-    public String guessAWord() throws FileNotFoundException {
+    public String getRandomWord() throws FileNotFoundException {
         FileReader file = new FileReader("dictionary.txt");
         Scanner scanner = null;
-
         scanner = new Scanner(file);
 
-        List<String> words = new ArrayList<>();
         while(scanner.hasNextLine()) {
-            words.add(scanner.nextLine());
+            words.add(scanner.nextLine().trim());
         }
 
         scanner.close();
@@ -28,33 +88,36 @@ public class Gallows {
         return words.get(indexOfWord);
     }
 
-    public StringBuilder createALineWithAWord(String word) {
+    public StringBuilder createWordMask(String word) {
         // Создаём StringBuilder и добавляем в него _ по количеству букв в слове
-        StringBuilder stringWithWord = new StringBuilder ("");
+        StringBuilder wordMask = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
-            stringWithWord.append("_"); // Строка
+            wordMask.append("_"); // Строка
         }
 
-        return stringWithWord;
+        return wordMask;
     }
 
-    public int validation(String letter) {
-        int validationResult = -1;
+    public enum ValidationResult {
+        INVALID_LETTER,
+        INVALID_LENGTH,
+        VALID
+    }
+
+    public ValidationResult validation(String letter) {
         letter = letter.trim();
 
-        String regex = "[а-я]";
+        String regex = "[а-яА-ЯёЁ]";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(letter);
 
         // Валидация
         if (!matcher.find()) {
-            validationResult = 1; // Не кириллица и не в нижнем регистре
-        } else if (letter.length() > 1 | letter.isEmpty()) {
-            validationResult = 2; // Больше одной буквы или пустое значение
+            return ValidationResult.INVALID_LETTER;
+        } else if (letter.length() != 1) {
+            return ValidationResult.INVALID_LENGTH;
         } else {
-            validationResult = 0; // Всё в порядке
+            return ValidationResult.VALID;
         }
-
-        return validationResult;
     }
 }

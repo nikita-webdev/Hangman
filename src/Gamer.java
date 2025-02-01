@@ -3,44 +3,40 @@ import java.util.List;
 
 public class Gamer {
     // Счётчик ошибок
-    private int counter;
+    private int mistakesCounter;
 
     // Буквы, которые игрок уже вводил
-    private List<String> alreadyEnteredLetters = new ArrayList<>();
+    private final List<String> enteredLetters = new ArrayList<>();
 
-    public int getCounter() {
-        return counter;
+    public int getMistakesCounter() {
+        return mistakesCounter;
     }
 
-    public void setCounter(int error) {
-        if (error == 0) {
-            this.counter = 0;
-        }
-
-        this.counter += error;
+    public void addMistake() {
+        mistakesCounter++;
     }
 
-    public String getAlreadyEnteredLetter() {
-        return alreadyEnteredLetters.toString();
+    public void clearMistakes() {
+        mistakesCounter = 0;
     }
 
-    public void addAlreadyEnteredLetter(String letter) {
+    public String getEnteredLetters() {
+        return enteredLetters.toString();
+    }
+
+    public void addEnteredLetter(String letter) {
         // Если введённой игроком буквы нет в листе - добавляем её
-        if (hasAlreadyEnteredLetter(letter) == 0) {
-            alreadyEnteredLetters.add(letter);
+        if (!hasEnteredLetter(letter)) {
+            enteredLetters.add(letter);
         }
     }
 
-    public int hasAlreadyEnteredLetter(String letter) {
+    public boolean hasEnteredLetter(String letter) {
         // Проверяем, входит ли введённая игроком буква в лист
-        if (alreadyEnteredLetters.indexOf(letter) == -1) {
-            return 0;
-        } else {
-            return 1;
-        }
+        return enteredLetters.contains(letter);
     }
 
-    public void clearAlreadyEnteredLetters() {
-        alreadyEnteredLetters.clear();
+    public void clearEnteredLetters() {
+        enteredLetters.clear();
     }
 }
