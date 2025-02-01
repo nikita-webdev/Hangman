@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 public class Gallows {
     private final List<String> words = new ArrayList<>();
-
     private static final String[][] GALLOWS_STAGES = {
             {
                     "      _____ ",
@@ -70,7 +69,6 @@ public class Gallows {
         return GALLOWS_STAGES[numStage];
     }
 
-    // Загадать случайное слово из словаря
     public String getRandomWord() throws FileNotFoundException {
         FileReader file = new FileReader("dictionary.txt");
         Scanner scanner = null;
@@ -89,7 +87,6 @@ public class Gallows {
     }
 
     public StringBuilder createWordMask(String word) {
-        // Создаём StringBuilder и добавляем в него _ по количеству букв в слове
         StringBuilder wordMask = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
             wordMask.append("_"); // Строка
@@ -111,7 +108,6 @@ public class Gallows {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(letter);
 
-        // Валидация
         if (!matcher.find()) {
             return ValidationResult.INVALID_LETTER;
         } else if (letter.length() != 1) {

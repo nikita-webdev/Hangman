@@ -7,18 +7,13 @@ public class Game {
 
     public void start() throws FileNotFoundException {
         boolean gameCycle = true;
-
-        // Загадываем число и выбираем слово в словаре
         String word = gallows.getRandomWord();
         int lettersInWord = word.length();
-
-        // Создаём строку со словом
         StringBuilder wordMask = gallows.createWordMask(word);
 
         while (gameCycle) {
             Scanner inputLetter = new Scanner(System.in);
 
-            // Выводим состояние виселицы
             for (int i = 0; i < gallows.printGallows(gamer.getMistakesCounter()).length; i++) {
                 System.out.println(gallows.printGallows(gamer.getMistakesCounter())[i]);
             }
@@ -29,11 +24,9 @@ public class Game {
                 System.out.println("Ранее вы вводили буквы: " + gamer.getEnteredLetters());
             }
 
-            // Пользователь вводит букву
             System.out.printf("Введите букву из слова: %n%s%n", wordMask);
             String userLetter = inputLetter.nextLine().trim().toLowerCase();
 
-            // Валидация
             Gallows.ValidationResult resultValidation = gallows.validation(userLetter);
 
             while (resultValidation != Gallows.ValidationResult.VALID) {
@@ -46,38 +39,26 @@ public class Game {
                 resultValidation = gallows.validation(userLetter);
             }
 
-
-
             if (word.contains(userLetter)) {
-                StringBuilder wordForReplace = new StringBuilder();
-                wordForReplace.append(word);
+                StringBuilder wordForReplace = new StringBuilder(word);
 
-                // Если буква введённая пользователем находится в слове
                 if (!gamer.getEnteredLetters().contains(userLetter)) {
                     while (wordForReplace.indexOf(userLetter) != -1) {
                         int index = wordForReplace.indexOf(userLetter);
-                        if (index != -1) {
                             wordMask.replace(index, index + 1, userLetter);
                             wordForReplace.replace(index, index + 1, " ");
-                        }
 
                         lettersInWord--;
-                        gamer.addEnteredLetter(userLetter);
                     }
+                    gamer.addEnteredLetter(userLetter);
                 }
-
             } else {
-
-                // Повторно вводимый символ, отсутствующий в секретном слове, не должен считаться за ошибку
                 if (!gamer.hasEnteredLetter(userLetter)) {
                     gamer.addMistake();
                 }
 
                 gamer.addEnteredLetter(userLetter);
             }
-
-
-
 
             if (lettersInWord == 0 || gamer.getMistakesCounter() == 6) {
                 if (lettersInWord == 0) {
@@ -89,14 +70,18 @@ public class Game {
                 gamer.clearEnteredLetters();
                 gameCycle = false;
             } else {
-                for (int i = 0; i < 10; i++) {
-                    System.out.println();
-                }
+                addSpaces();
 
                 if (!word.contains(userLetter)) {
                     System.out.printf("Буквы \"%s\" нет в слове%n", userLetter);
                 }
             }
+        }
+    }
+
+    void addSpaces() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println();
         }
     }
 }
