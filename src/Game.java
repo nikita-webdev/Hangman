@@ -3,7 +3,9 @@ import java.util.Scanner;
 
 public class Game {
     Gallows gallows = new Gallows();
-    Gamer gamer = new Gamer();
+    GameState gameState = new GameState();
+
+    private final static int MAX_MISTAKES = 6;
 
     public void start() throws FileNotFoundException {
         boolean gameCycle = true;
@@ -14,14 +16,15 @@ public class Game {
         while (gameCycle) {
             Scanner inputLetter = new Scanner(System.in);
 
-            for (int i = 0; i < gallows.printGallows(gamer.getMistakesCounter()).length; i++) {
-                System.out.println(gallows.printGallows(gamer.getMistakesCounter())[i]);
+            int rows = gallows.getGallowsStage(gameState.getMistakesCounter()).length;
+            for (int i = 0; i < rows; i++) {
+                System.out.println(gallows.getGallowsStage(gameState.getMistakesCounter())[i]);
             }
 
-            System.out.println("Число ошибок: " + gamer.getMistakesCounter());
+            printMistakesNumber();
 
-            if (gamer.getEnteredLetters().length() > 2) {
-                System.out.println("Ранее вы вводили буквы: " + gamer.getEnteredLetters());
+            if (gameState.getEnteredLetters().length() > 2) {
+                System.out.println("Ранее вы вводили буквы: " + gameState.getEnteredLetters());
             }
 
             System.out.printf("Введите букву из слова: %n%s%n", wordMask);
@@ -42,7 +45,7 @@ public class Game {
             if (word.contains(userLetter)) {
                 StringBuilder wordForReplace = new StringBuilder(word);
 
-                if (!gamer.getEnteredLetters().contains(userLetter)) {
+                if (!gameState.getEnteredLetters().contains(userLetter)) {
                     while (wordForReplace.indexOf(userLetter) != -1) {
                         int index = wordForReplace.indexOf(userLetter);
                             wordMask.replace(index, index + 1, userLetter);
@@ -50,24 +53,28 @@ public class Game {
 
                         lettersInWord--;
                     }
-                    gamer.addEnteredLetter(userLetter);
+                    gameState.addEnteredLetter(userLetter);
                 }
             } else {
-                if (!gamer.hasEnteredLetter(userLetter)) {
-                    gamer.addMistake();
+                if (!gameState.hasEnteredLetter(userLetter)) {
+                    gameState.addMistake();
                 }
 
-                gamer.addEnteredLetter(userLetter);
+                gameState.addEnteredLetter(userLetter);
             }
 
-            if (lettersInWord == 0 || gamer.getMistakesCounter() == 6) {
-                if (lettersInWord == 0) {
-                    System.out.printf("Вы выиграли! Загаданное слово: %s%n%n", word);
+            if (isWin(lettersInWord) || gameState.getMistakesCounter() == MAX_MISTAKES) {
+                if (isWin(lettersInWord)) {
+                    printWinMessage(word);
                 } else {
-                    System.out.printf("Вы проиграли. Загаданное слово: %s%n%n", word);
+                    for (int i = 0; i < rows; i++) {
+                        System.out.println(gallows.getGallowsStage(gameState.getMistakesCounter())[i]);
+                    }
+                    printMistakesNumber();
+                    printLoseMessage(word);
                 }
-                gamer.clearMistakes();
-                gamer.clearEnteredLetters();
+                gameState.clearMistakes();
+                gameState.clearEnteredLetters();
                 gameCycle = false;
             } else {
                 addSpaces();
@@ -83,5 +90,21 @@ public class Game {
         for (int i = 0; i < 10; i++) {
             System.out.println();
         }
+    }
+
+    private void printMistakesNumber() {
+        System.out.println("Число ошибок: " + gameState.getMistakesCounter());
+    }
+
+    private boolean isWin(int lettersInWord) {
+        return lettersInWord == 0;
+    }
+
+    private void printWinMessage(String word) {
+        System.out.printf("Вы выиграли! Загаданное слово: %s%n%n", word);
+    }
+
+    private void printLoseMessage(String word) {
+        System.out.printf("Вы проиграли! Загаданное слово: %s%n%n", word);
     }
 }

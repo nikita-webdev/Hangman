@@ -2,11 +2,10 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Main {
-    public final static String START = "y";
-    public final static String EXIT = "n";
+    private final static String START = "y";
+    private final static String EXIT = "n";
 
     public static void main(String[] args) throws FileNotFoundException {
-        Game game = new Game();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Добро пожаловать в игру \"Виселица\"!");
@@ -17,6 +16,7 @@ public class Main {
             String start = scanner.nextLine().trim().toLowerCase();
 
             if (start.equals(START)) {
+                Game game = new Game();
                 System.out.printf("Начинаем игру.%n");
                 game.start();
             } else if (start.equals(EXIT)) {

@@ -65,7 +65,7 @@ public class Gallows {
             },
     };
 
-    public String[] printGallows(int numStage) {
+    public String[] getGallowsStage(int numStage) {
         return GALLOWS_STAGES[numStage];
     }
 
@@ -101,16 +101,16 @@ public class Gallows {
         VALID
     }
 
-    public ValidationResult validation(String letter) {
-        letter = letter.trim();
+    public ValidationResult validation(String s) {
+        s = s.trim();
 
         String regex = "[а-яА-ЯёЁ]";
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(letter);
+        Matcher matcher = pattern.matcher(s);
 
         if (!matcher.find()) {
             return ValidationResult.INVALID_LETTER;
-        } else if (letter.length() != 1) {
+        } else if (s.length() != 1) {
             return ValidationResult.INVALID_LENGTH;
         } else {
             return ValidationResult.VALID;

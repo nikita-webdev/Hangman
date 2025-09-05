@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Gamer {
+public class GameState {
     private int mistakesCounter;
     private final List<String> enteredLetters = new ArrayList<>();
 
