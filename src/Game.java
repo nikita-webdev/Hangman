@@ -6,25 +6,26 @@ public class Game {
     GameState gameState = new GameState();
 
     private final static int MAX_MISTAKES = 6;
+    String word;
+    int lettersInWord;
+    StringBuilder wordMask;
+
+    public Game() throws FileNotFoundException {
+    }
 
     public void start() throws FileNotFoundException {
         boolean gameCycle = true;
-        String word = gallows.getRandomWord();
-        int lettersInWord = word.length();
-        StringBuilder wordMask = gallows.createWordMask(word);
+
+        initializeGame();
 
         while (gameCycle) {
             Scanner inputLetter = new Scanner(System.in);
 
-            int rows = gallows.getGallowsStage(gameState.getMistakesCounter()).length;
-            for (int i = 0; i < rows; i++) {
-                System.out.println(gallows.getGallowsStage(gameState.getMistakesCounter())[i]);
-            }
-
+            printGallowsState();
             printMistakesNumber();
 
             if (gameState.getEnteredLetters().length() > 2) {
-                System.out.println("Ранее вы вводили буквы: " + gameState.getEnteredLetters());
+                printPreviouslyEnteredLetters();
             }
 
             System.out.printf("Введите букву из слова: %n%s%n", wordMask);
@@ -67,14 +68,10 @@ public class Game {
                 if (isWin(lettersInWord)) {
                     printWinMessage(word);
                 } else {
-                    for (int i = 0; i < rows; i++) {
-                        System.out.println(gallows.getGallowsStage(gameState.getMistakesCounter())[i]);
-                    }
+                    printGallowsState();
                     printMistakesNumber();
                     printLoseMessage(word);
                 }
-                gameState.clearMistakes();
-                gameState.clearEnteredLetters();
                 gameCycle = false;
             } else {
                 addSpaces();
@@ -106,5 +103,28 @@ public class Game {
 
     private void printLoseMessage(String word) {
         System.out.printf("Вы проиграли! Загаданное слово: %s%n%n", word);
+    }
+
+    private void initializeGame() throws FileNotFoundException {
+//        try {
+            word = gallows.getRandomWord();
+            wordMask = gallows.createWordMask(word);
+            lettersInWord = word.length();
+            gameState.clearMistakes();
+            gameState.clearEnteredLetters();
+//        } catch (FileNotFoundException e) {
+//            System.out.println("Dictionary not found.");
+//        }
+    }
+
+    private void printGallowsState() {
+        int rows = gallows.getGallowsStage(gameState.getMistakesCounter()).length;
+        for (int i = 0; i < rows; i++) {
+            System.out.println(gallows.getGallowsStage(gameState.getMistakesCounter())[i]);
+        }
+    }
+
+    private void printPreviouslyEnteredLetters() {
+        System.out.println("Ранее вы вводили буквы: " + gameState.getEnteredLetters());
     }
 }
