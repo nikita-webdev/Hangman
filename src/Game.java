@@ -5,7 +5,10 @@ public class Game {
     private final Gallows gallows = new Gallows();
     private final GameState gameState = new GameState();
 
-    private final static int MAX_MISTAKES = 6;
+    private static final int MAX_MISTAKES = 6;
+    private static final int NUM_BLANK_LINES = 10;
+    private static final int NOT_FOUND_INDEX = -1;
+    private static final int MIN_LETTERS_TO_SHOW_HISTORY = 3;
     private String word;
     private int lettersInWord;
     private StringBuilder wordMask;
@@ -19,39 +22,36 @@ public class Game {
             System.exit(1);
         }
 
-        String userLetter;
-        boolean gameCycle = true;
+        gameLoop();
+    }
 
-        while (gameCycle) {
+    private void gameLoop() {
+        String userLetter;
+        boolean isRunning = true;
+
+        while (isRunning) {
             printGallowsState();
             printMistakesNumber();
 
-            if (gameState.getEnteredLetters().length() > 2) {
+            if (gameState.getEnteredLetters().length() >= MIN_LETTERS_TO_SHOW_HISTORY) {
                 printPreviouslyEnteredLetters();
             }
 
             userLetter = inputUserLetter();
 
             if (word.contains(userLetter)) {
-                StringBuilder wordForReplace = new StringBuilder(word);
+                boolean letterNotEntered = !gameState.hasEnteredLetter(userLetter);
 
-                if (!gameState.getEnteredLetters().contains(userLetter)) {
-                    while (wordForReplace.indexOf(userLetter) != -1) {
-                        int index = wordForReplace.indexOf(userLetter);
-                            wordMask.replace(index, index + 1, userLetter);
-                            wordForReplace.replace(index, index + 1, " ");
-
-                        lettersInWord--;
-                    }
-                    gameState.addEnteredLetter(userLetter);
+                if (letterNotEntered) {
+                    updateMask(userLetter);
                 }
             } else {
                 if (!gameState.hasEnteredLetter(userLetter)) {
-                    gameState.addMistake();
+                    gameState.increaseMistakesCounter();
                 }
-
-                gameState.addEnteredLetter(userLetter);
             }
+
+            gameState.addEnteredLetter(userLetter);
 
             if (isGameOver()) {
                 if (isWin(lettersInWord)) {
@@ -61,9 +61,9 @@ public class Game {
                     printMistakesNumber();
                     printLoseMessage(word);
                 }
-                gameCycle = false;
+                isRunning = false;
             } else {
-                addSpaces();
+                printBlankLines();
 
                 if (!word.contains(userLetter)) {
                     System.out.printf("Буквы \"%s\" нет в слове%n", userLetter);
@@ -72,8 +72,8 @@ public class Game {
         }
     }
 
-    private void addSpaces() {
-        for (int i = 0; i < 10; i++) {
+    private void printBlankLines() {
+        for (int i = 0; i < NUM_BLANK_LINES; i++) {
             System.out.println();
         }
     }
@@ -134,5 +134,16 @@ public class Game {
         }
 
         return letter;
+    }
+
+    private void updateMask(String userLetter) {
+        StringBuilder wordForReplace = new StringBuilder(word);
+        while (wordForReplace.indexOf(userLetter) != NOT_FOUND_INDEX) {
+            int index = wordForReplace.indexOf(userLetter);
+            wordMask.replace(index, index + 1, userLetter);
+            wordForReplace.replace(index, index + 1, " ");
+
+            lettersInWord--;
+        }
     }
 }

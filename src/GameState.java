@@ -9,7 +9,7 @@ public class GameState {
         return mistakesCounter;
     }
 
-    public void addMistake() {
+    public void increaseMistakesCounter() {
         mistakesCounter++;
     }
 
