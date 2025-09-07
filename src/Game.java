@@ -64,7 +64,7 @@ public class Game {
                 gameState.addEnteredLetter(userLetter);
             }
 
-            if (isWin(lettersInWord) || gameState.getMistakesCounter() == MAX_MISTAKES) {
+            if (isGameOver()) {
                 if (isWin(lettersInWord)) {
                     printWinMessage(word);
                 } else {
@@ -91,6 +91,10 @@ public class Game {
 
     private void printMistakesNumber() {
         System.out.println("Число ошибок: " + gameState.getMistakesCounter());
+    }
+
+    private boolean isGameOver() {
+        return isWin(lettersInWord) || gameState.getMistakesCounter() == MAX_MISTAKES;
     }
 
     private boolean isWin(int lettersInWord) {
