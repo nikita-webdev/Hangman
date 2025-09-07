@@ -2,20 +2,16 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Game {
-    Gallows gallows = new Gallows();
-    GameState gameState = new GameState();
+    private final Gallows gallows = new Gallows();
+    private final GameState gameState = new GameState();
 
     private final static int MAX_MISTAKES = 6;
-    String word;
-    int lettersInWord;
-    StringBuilder wordMask;
-
-    public Game() {
-    }
+    private String word;
+    private int lettersInWord;
+    private StringBuilder wordMask;
+    private final Scanner scanner = new Scanner(System.in);
 
     public void start() {
-        boolean gameCycle = true;
-
         try {
             initializeGame();
         } catch (FileNotFoundException e) {
@@ -23,8 +19,10 @@ public class Game {
             System.exit(1);
         }
 
-        while (gameCycle) {
+        String userLetter;
+        boolean gameCycle = true;
 
+        while (gameCycle) {
             printGallowsState();
             printMistakesNumber();
 
@@ -32,21 +30,7 @@ public class Game {
                 printPreviouslyEnteredLetters();
             }
 
-            Scanner inputLetter = new Scanner(System.in);
-            System.out.printf("Введите букву из слова: %n%s%n", wordMask);
-            String userLetter = inputLetter.nextLine().trim().toLowerCase();
-
-            Gallows.ValidationResult resultValidation = gallows.validation(userLetter);
-
-            while (resultValidation != Gallows.ValidationResult.VALID) {
-                if (resultValidation == Gallows.ValidationResult.INVALID_LETTER) {
-                    System.out.println("Нужно ввести букву кириллицы");
-                } else if (resultValidation == Gallows.ValidationResult.INVALID_LENGTH) {
-                    System.out.println("Нужно ввести одну букву:");
-                }
-                userLetter = inputLetter.nextLine().trim().toLowerCase();
-                resultValidation = gallows.validation(userLetter);
-            }
+            userLetter = inputUserLetter();
 
             if (word.contains(userLetter)) {
                 StringBuilder wordForReplace = new StringBuilder(word);
@@ -88,7 +72,7 @@ public class Game {
         }
     }
 
-    void addSpaces() {
+    private void addSpaces() {
         for (int i = 0; i < 10; i++) {
             System.out.println();
         }
@@ -131,5 +115,24 @@ public class Game {
 
     private void printPreviouslyEnteredLetters() {
         System.out.println("Ранее вы вводили буквы: " + gameState.getEnteredLetters());
+    }
+
+    private String inputUserLetter() {
+        Scanner inputLetter = scanner;
+        System.out.printf("Введите букву из слова: %n%s%n", wordMask);
+        String letter = inputLetter.nextLine().trim().toLowerCase();
+        Gallows.ValidationResult resultValidation = gallows.validation(letter);
+
+        while (resultValidation != Gallows.ValidationResult.VALID) {
+            if (resultValidation == Gallows.ValidationResult.INVALID_LETTER) {
+                System.out.println("Нужно ввести букву кириллицы");
+            } else if (resultValidation == Gallows.ValidationResult.INVALID_LENGTH) {
+                System.out.println("Нужно ввести одну букву:");
+            }
+            letter = inputLetter.nextLine().trim().toLowerCase();
+            resultValidation = gallows.validation(letter);
+        }
+
+        return letter;
     }
 }
