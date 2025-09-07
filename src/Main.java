@@ -5,7 +5,7 @@ public class Main {
     private final static String START = "y";
     private final static String EXIT = "n";
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Добро пожаловать в игру \"Виселица\"!");

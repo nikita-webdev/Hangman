@@ -10,16 +10,20 @@ public class Game {
     int lettersInWord;
     StringBuilder wordMask;
 
-    public Game() throws FileNotFoundException {
+    public Game() {
     }
 
-    public void start() throws FileNotFoundException {
+    public void start() {
         boolean gameCycle = true;
 
-        initializeGame();
+        try {
+            initializeGame();
+        } catch (FileNotFoundException e) {
+            System.out.println("Dictionary not found.");
+            System.exit(1);
+        }
 
         while (gameCycle) {
-            Scanner inputLetter = new Scanner(System.in);
 
             printGallowsState();
             printMistakesNumber();
@@ -28,6 +32,7 @@ public class Game {
                 printPreviouslyEnteredLetters();
             }
 
+            Scanner inputLetter = new Scanner(System.in);
             System.out.printf("Введите букву из слова: %n%s%n", wordMask);
             String userLetter = inputLetter.nextLine().trim().toLowerCase();
 
@@ -110,15 +115,11 @@ public class Game {
     }
 
     private void initializeGame() throws FileNotFoundException {
-//        try {
-            word = gallows.getRandomWord();
-            wordMask = gallows.createWordMask(word);
-            lettersInWord = word.length();
-            gameState.clearMistakes();
-            gameState.clearEnteredLetters();
-//        } catch (FileNotFoundException e) {
-//            System.out.println("Dictionary not found.");
-//        }
+        word = gallows.getRandomWord();
+        wordMask = gallows.createWordMask(word);
+        lettersInWord = word.length();
+        gameState.clearMistakes();
+        gameState.clearEnteredLetters();
     }
 
     private void printGallowsState() {
